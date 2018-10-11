@@ -1,6 +1,11 @@
 package pl.movies;
 
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
+
+import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -8,20 +13,21 @@ public class PriceCalculatorTest {
 
     private static final int  PERIOD_IN_DAYS = 6;
 
-    private PriceCalculator priceCalculator;
+    private PriceCalculator priceCalculator = new PriceCalculator();
 
-    @Test
-    public void shouldCalculateRegularMoviePrice() {
-        priceCalculator = new PriceCalculator(2, 1.5, 2);
-        double price = priceCalculator.getValueFor(PERIOD_IN_DAYS);
-        assertEquals(8.0, price);
+    private static Stream<Arguments> init() {
+        return Stream.of(
+                Arguments.of(MovieType.REGULAR, 8),
+                Arguments.of(MovieType.NEW_RELEASE, 18),
+                Arguments.of(MovieType.CHILDREN, 6)
+        );
     }
 
-    @Test
-    public void shouldCalculateNewReleaseMoviePrice() {
-        priceCalculator = new PriceCalculator(0, 3, 0);
-        double price = priceCalculator.getValueFor(PERIOD_IN_DAYS);
-        assertEquals(18.0, price);
+    @MethodSource("init")
+    @ParameterizedTest
+    public void shouldCalculateMoviePrice(MovieType movieType, double expectedPrice) {
+        double price = priceCalculator.getValueFor(movieType, PERIOD_IN_DAYS);
+        assertEquals(expectedPrice, price);
     }
 
 }

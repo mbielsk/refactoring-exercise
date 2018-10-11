@@ -1,20 +1,13 @@
 package pl.movies;
 
-import lombok.AllArgsConstructor;
-
-@AllArgsConstructor
 public class PriceCalculator {
 
-    private double initialCost;
-    private double costPerDay;
-    private int freeRentalPeriodInDays;
-
-    public double getValueFor(int periodInDays) {
-        return initialCost + getValueForPaidDays(periodInDays);
+    public double getValueFor(MovieType movieType, int periodInDays) {
+        return movieType.getInitialCost() + getValueForPaidDays(movieType, periodInDays);
     }
 
-    private double getValueForPaidDays(int periodInDays) {
-        return (periodInDays - freeRentalPeriodInDays) * costPerDay;
+    private double getValueForPaidDays(MovieType movieType, int periodInDays) {
+        return (periodInDays - movieType.getFreeRentalPeriodInDays()) * movieType.getCostPerDay();
     }
 
 }
